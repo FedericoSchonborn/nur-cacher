@@ -1,26 +1,29 @@
 env:
   NUR_REPO: federicoschonborn
 jobs:
-  build-nixos-stable-aarch64-linux:
+  build-nixos-24_05-aarch64-linux:
+    name: NixOS 24.05 (Linux/aarch64)
     needs:
       - build-nixos-unstable-aarch64-linux
-      - build-nixos-stable-x86_64-linux
+      - build-nixos-24_05-x86_64-linux
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixos-24.05
-      runs-on: ubuntu-22.04
+      runner: ubuntu-22.04
       system: aarch64-linux
-  build-nixos-stable-x86_64-linux:
+  build-nixos-24_05-x86_64-linux:
+    name: NixOS 24.05 (Linux/x86_64)
     needs:
       - build-nixos-unstable-x86_64-linux
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixos-24.05
-      runs-on: ubuntu-22.04
+      runner: ubuntu-22.04
       system: x86_64-linux
   build-nixos-unstable-aarch64-linux:
+    name: NixOS Unstable (Linux/aarch64)
     needs:
       - build-nixpkgs-unstable-aarch64-linux
       - build-nixos-unstable-x86_64-linux
@@ -28,75 +31,82 @@ jobs:
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixos-unstable
-      runs-on: ubuntu-22.04
+      runner: ubuntu-22.04
       system: aarch64-linux
   build-nixos-unstable-x86_64-linux:
+    name: NixOS Unstable (Linux/x86_64)
     needs:
       - build-nixpkgs-unstable-x86_64-linux
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixos-unstable
-      runs-on: ubuntu-22.04
+      runner: ubuntu-22.04
       system: x86_64-linux
-  build-nixpkgs-stable-aarch64-darwin:
+  build-nixpkgs-24_05-darwin-aarch64-darwin:
+    name: Nixpkgs 24.05 (Darwin/aarch64)
     needs:
       - build-nixpkgs-unstable-aarch64-darwin
-      - build-nixpkgs-stable-x86_64-darwin
+      - build-nixpkgs-24_05-darwin-x86_64-darwin
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixpkgs-24.05-darwin
-      runs-on: macos-14
+      runner: macos-14
       system: aarch64-darwin
-  build-nixpkgs-stable-x86_64-darwin:
+  build-nixpkgs-24_05-darwin-x86_64-darwin:
+    name: Nixpkgs 24.05 (Darwin/x86_64)
     needs:
       - build-nixpkgs-unstable-x86_64-darwin
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixpkgs-24.05-darwin
-      runs-on: macos-13
+      runner: macos-13
       system: x86_64-darwin
   build-nixpkgs-unstable-aarch64-darwin:
+    name: Nixpkgs Unstable (Darwin/aarch64)
     needs:
       - build-nixpkgs-unstable-x86_64-darwin
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixpkgs-unstable
-      runs-on: macos-14
+      runner: macos-14
       system: aarch64-darwin
   build-nixpkgs-unstable-aarch64-linux:
+    name: Nixpkgs Unstable (Linux/aarch64)
     needs:
       - build-nixpkgs-unstable-x86_64-linux
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixpkgs-unstable
-      runs-on: ubuntu-22.04
+      runner: ubuntu-22.04
       system: aarch64-linux
   build-nixpkgs-unstable-x86_64-darwin:
+    name: Nixpkgs Unstable (Darwin/x86_64)
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixpkgs-unstable
-      runs-on: macos-13
+      runner: macos-13
       system: x86_64-darwin
   build-nixpkgs-unstable-x86_64-linux:
+    name: Nixpkgs Unstable (Linux/x86_64)
     secrets: inherit
     uses: ./.github/workflows/build.yaml
     with:
       channel: nixpkgs-unstable
-      runs-on: ubuntu-22.04
+      runner: ubuntu-22.04
       system: x86_64-linux
   deploy:
     name: Deploy
     needs:
-      - build-nixos-stable-x86_64-linux
-      - build-nixos-stable-aarch64-linux
-      - build-nixpkgs-stable-x86_64-darwin
-      - build-nixpkgs-stable-aarch64-darwin
+      - build-nixos-24_05-x86_64-linux
+      - build-nixos-24_05-aarch64-linux
+      - build-nixpkgs-24_05-darwin-x86_64-darwin
+      - build-nixpkgs-24_05-darwin-aarch64-darwin
     runs-on: ubuntu-22.04
     steps:
       - name: Trigger NUR update

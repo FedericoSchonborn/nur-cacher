@@ -6,7 +6,7 @@ in
   name = "Build";
 
   on.workflow_call.inputs = {
-    runs-on = {
+    runner = {
       type = "string";
       required = true;
     };
@@ -24,7 +24,7 @@ in
 
   jobs.build = {
     name = "Build";
-    runs-on = lib.ref "inputs.runs-on";
+    runs-on = lib.ref "inputs.runner";
 
     steps = [
       {
@@ -36,7 +36,7 @@ in
 
       {
         name = "Setup QEMU";
-        "if" = "inputs.runs-on == '${lib.runners.ubuntu}' && !contains(fromJSON('[\"x86_64-linux\"]'), inputs.system)";
+        "if" = "inputs.runner == '${lib.runners.ubuntu}' && !contains(fromJSON('[\"x86_64-linux\"]'), inputs.system)";
         uses = "docker/setup-qemu-action@v3";
       }
 

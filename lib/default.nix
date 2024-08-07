@@ -9,21 +9,31 @@ let
     };
   };
 
-  stableVersion = "24.05";
+  nixpkgsVersion = {
+    oldStable = "23.11";
+    stable = "24.05";
+    unstable = "unstable";
+  };
+
   channels = {
-    nixpkgs.unstable = "nixpkgs-unstable";
-    nixos = {
-      stable = "nixos-${stableVersion}";
-      unstable = "nixos-unstable";
+    nixpkgs = builtins.mapAttrs (_: version: "nixpkgs-${version}") {
+      inherit (nixpkgsVersion) unstable;
     };
-    darwin.stable = "nixpkgs-${stableVersion}-darwin";
+
+    nixos = builtins.mapAttrs (_: version: "nixos-${version}") {
+      inherit (nixpkgsVersion) oldStable stable unstable;
+    };
+
+    darwin = builtins.mapAttrs (_: version: "nixpkgs-${version}-darwin") {
+      inherit (nixpkgsVersion) oldStable stable;
+    };
   };
 in
 {
   inherit
     ref
     runners
-    stableVersion
+    nixpkgsVersion
     channels
     ;
 }

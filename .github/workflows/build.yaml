@@ -3,12 +3,12 @@ env:
 jobs:
   build:
     name: Build
-    runs-on: ${{ inputs.runs-on }}
+    runs-on: ${{ inputs.runner }}
     steps:
       - name: Checkout
         run: |
           git clone --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages $GITHUB_WORKSPACE
-      - if: inputs.runs-on == 'ubuntu-22.04' && !contains(fromJSON('["x86_64-linux"]'), inputs.system)
+      - if: inputs.runner == 'ubuntu-22.04' && !contains(fromJSON('["x86_64-linux"]'), inputs.system)
         name: Setup QEMU
         uses: docker/setup-qemu-action@v3
       - name: Setup Nix
@@ -38,7 +38,7 @@ name: Build
       channel:
         required: true
         type: string
-      runs-on:
+      runner:
         required: true
         type: string
       system:
