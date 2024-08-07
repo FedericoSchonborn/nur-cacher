@@ -23,16 +23,21 @@ in
         (
           {
             runner,
-            system,
+            system ? targetSystem,
+            buildSystem ? system,
+            targetSystem ? system,
             channel,
             needs ? null,
           }:
           {
-            name = jobName { inherit channel system; };
+            name = jobName {
+              inherit channel;
+              system = targetSystem;
+            };
             value = {
               name =
                 let
-                  systemParts = builtins.match "(.*)-(.*)" system;
+                  systemParts = builtins.match "(.*)-(.*)" targetSystem;
                   systemArch = builtins.elemAt systemParts 0;
                   systemKernel = builtins.elemAt systemParts 1;
 
@@ -59,7 +64,12 @@ in
                 "${prettyChannel} (${prettySystem})";
               uses = "./.github/workflows/build.yaml";
               "with" = {
-                inherit runner system channel;
+                inherit
+                  runner
+                  buildSystem
+                  targetSystem
+                  channel
+                  ;
               };
               secrets = "inherit";
             } // (if builtins.isList needs then { needs = builtins.map jobName needs; } else { });
@@ -74,7 +84,8 @@ in
 
           {
             runner = lib.runners.ubuntu;
-            system = "aarch64-linux";
+            buildSystem = "x86_64-linux";
+            targetSystem = "aarch64-linux";
             channel = lib.channels.nixpkgs.unstable;
             needs = [
               {
@@ -116,7 +127,8 @@ in
 
           {
             runner = lib.runners.ubuntu;
-            system = "aarch64-linux";
+            buildSystem = "x86_64-linux";
+            targetSystem = "aarch64-linux";
             channel = lib.channels.nixos.unstable;
             needs = [
               {
@@ -144,7 +156,8 @@ in
 
           {
             runner = lib.runners.ubuntu;
-            system = "aarch64-linux";
+            buildSystem = "x86_64-linux";
+            targetSystem = "aarch64-linux";
             channel = lib.channels.nixos.stable;
             needs = [
               {

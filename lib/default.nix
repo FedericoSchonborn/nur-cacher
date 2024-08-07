@@ -9,6 +9,8 @@ let
     };
   };
 
+  lixVersion = "2.90.0";
+
   nixpkgsVersion = {
     oldStable = "23.11";
     stable = "24.05";
@@ -33,6 +35,7 @@ in
   inherit
     ref
     runners
+    lixVersion
     nixpkgsVersion
     channels
     ;

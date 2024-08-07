@@ -10,7 +10,11 @@ in
       type = "string";
       required = true;
     };
-    system = {
+    buildSystem = {
+      type = "string";
+      required = true;
+    };
+    targetSystem = {
       type = "string";
       required = true;
     };
@@ -36,7 +40,7 @@ in
 
       {
         name = "Setup QEMU";
-        "if" = "inputs.runner == '${lib.runners.ubuntu}' && !contains(fromJSON('[\"x86_64-linux\"]'), inputs.system)";
+        "if" = "inputs.runner == '${lib.runners.ubuntu}' && inputs.targetSystem != inputs.buildSystem";
         uses = "docker/setup-qemu-action@v3";
       }
 
@@ -44,9 +48,11 @@ in
         name = "Setup Nix";
         uses = "DeterminateSystems/nix-installer-action@v13";
         "with" = {
+          source-url = "https://install.lix.systems/lix/lix-installer-${lib.ref "inputs.buildSystem"}";
+          nix-package-url = "https://releases.lix.systems/lix/lix-${lib.lixVersion}/lix-${lib.lixVersion}-${lib.ref "inputs.buildSystem"}.tar.xz";
           extra-conf = ''
             nix-path = nixpkgs=channel:${lib.ref "inputs.channel"}
-            system = ${lib.ref "inputs.system"}
+            system = ${lib.ref "inputs.targetSystem"}
           '';
         };
       }
@@ -58,7 +64,7 @@ in
 
       {
         name = "Setup Cachix";
-        "if" = "contains(fromJSON('[\"x86_64-linux\", \"aarch64-linux\"]'), inputs.system)";
+        "if" = ''contains(fromJSON('["x86_64-linux", "aarch64-linux"]'), inputs.buildSystem)'';
         uses = "cachix/cachix-action@v15";
         "with" = {
           authToken = lib.ref "secrets.CACHIX_AUTH_TOKEN";

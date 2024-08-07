@@ -8,7 +8,7 @@ jobs:
       - name: Checkout
         run: |
           git clone --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages $GITHUB_WORKSPACE
-      - if: inputs.runner == 'ubuntu-22.04' && !contains(fromJSON('["x86_64-linux"]'), inputs.system)
+      - if: inputs.runner == 'ubuntu-22.04' && inputs.targetSystem != inputs.buildSystem
         name: Setup QEMU
         uses: docker/setup-qemu-action@v3
       - name: Setup Nix
@@ -16,10 +16,12 @@ jobs:
         with:
           extra-conf: |
             nix-path = nixpkgs=channel:${{ inputs.channel }}
-            system = ${{ inputs.system }}
+            system = ${{ inputs.targetSystem }}
+          nix-package-url: https://releases.lix.systems/lix/lix-2.90.0/lix-2.90.0-${{ inputs.buildSystem }}.tar.xz
+          source-url: https://install.lix.systems/lix/lix-installer-${{ inputs.buildSystem }}
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v7
-      - if: contains(fromJSON('["x86_64-linux", "aarch64-linux"]'), inputs.system)
+      - if: contains(fromJSON('["x86_64-linux", "aarch64-linux"]'), inputs.buildSystem)
         name: Setup Cachix
         uses: cachix/cachix-action@v15
         with:
@@ -35,12 +37,15 @@ name: Build
 "on":
   workflow_call:
     inputs:
+      buildSystem:
+        required: true
+        type: string
       channel:
         required: true
         type: string
       runner:
         required: true
         type: string
-      system:
+      targetSystem:
         required: true
         type: string
