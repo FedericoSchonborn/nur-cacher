@@ -14,25 +14,22 @@ jobs:
       - name: Setup Nix
         uses: DeterminateSystems/nix-installer-action@v13
         with:
-          extra-conf: |
-            nix-path = nixpkgs=channel:${{ inputs.channel }}
-            system = ${{ inputs.targetSystem }}
           nix-package-url: https://releases.lix.systems/lix/lix-2.90.0/lix-2.90.0-${{ inputs.buildSystem }}.tar.xz
           source-url: https://install.lix.systems/lix/lix-installer-${{ inputs.buildSystem }}
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v7
-      - if: contains(fromJSON('["x86_64-linux", "aarch64-linux"]'), inputs.buildSystem)
+      - if: contains(fromJSON('["x86_64-linux", "aarch64-linux", "i686-linux", "x86_64-darwin", "aarch64-darwin"]'), inputs.buildSystem)
         name: Setup Cachix
         uses: cachix/cachix-action@v15
         with:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
           name: ${{ env.CACHIX_NAME }}
-      - name: Show Nixpkgs version
+      - name: Dry Build Nix packages
         run: |
-          nix eval --impure --raw --expr "(import <nixpkgs> {}).lib.version"
+          nix build --dry-run --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --override-flake nixpkgs github:NixOS/nixpkgs/${{ inputs.channel }}
       - name: Build Nix packages
         run: |
-          nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs -build-flags "--print-build-logs --keep-going"
+          nix build --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --override-flake nixpkgs github:NixOS/nixpkgs/${{ inputs.channel }}
 name: Build
 "on":
   workflow_call:

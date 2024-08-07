@@ -50,10 +50,6 @@ in
         "with" = {
           source-url = "https://install.lix.systems/lix/lix-installer-${lib.ref "inputs.buildSystem"}";
           nix-package-url = "https://releases.lix.systems/lix/lix-${lib.lixVersion}/lix-${lib.lixVersion}-${lib.ref "inputs.buildSystem"}.tar.xz";
-          extra-conf = ''
-            nix-path = nixpkgs=channel:${lib.ref "inputs.channel"}
-            system = ${lib.ref "inputs.targetSystem"}
-          '';
         };
       }
 
@@ -64,7 +60,7 @@ in
 
       {
         name = "Setup Cachix";
-        "if" = ''contains(fromJSON('["x86_64-linux", "aarch64-linux"]'), inputs.buildSystem)'';
+        "if" = ''contains(fromJSON('["x86_64-linux", "aarch64-linux", "i686-linux", "x86_64-darwin", "aarch64-darwin"]'), inputs.buildSystem)'';
         uses = "cachix/cachix-action@v15";
         "with" = {
           authToken = lib.ref "secrets.CACHIX_AUTH_TOKEN";
@@ -73,23 +69,16 @@ in
       }
 
       {
-        name = "Show Nixpkgs version";
+        name = "Dry Build Nix packages";
         run = ''
-          nix eval --impure --raw --expr "(import <nixpkgs> {}).lib.version"
+          nix build --dry-run --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${lib.ref "inputs.targetSystem"}" --override-flake nixpkgs github:NixOS/nixpkgs/${lib.ref "inputs.channel"}
         '';
       }
-
-      # {
-      #   name = "Check evaluation";
-      #   run = ''
-      #     nix eval --impure --json --expr "builtins.mapAttrs (name: value: value.meta or {}) (import ./. {})"
-      #   '';
-      # }
 
       {
         name = "Build Nix packages";
         run = ''
-          nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs -build-flags "--print-build-logs --keep-going"
+          nix build --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${lib.ref "inputs.targetSystem"}" --override-flake nixpkgs github:NixOS/nixpkgs/${lib.ref "inputs.channel"}
         '';
       }
     ];
