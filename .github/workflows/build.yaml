@@ -30,7 +30,7 @@ jobs:
           nix eval --impure --raw --expr "(import <nixpkgs> {}).lib.version"
       - name: Build Nix packages
         run: |
-          nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs -build-flags "-L"
+          nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs -build-flags "--print-build-logs --keep-going"
 name: Build
 "on":
   workflow_call:

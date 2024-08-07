@@ -19,7 +19,7 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = lib.runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu;
         system = "x86_64-linux";
         channel = lib.channels.nixpkgs.unstable;
       };
@@ -29,7 +29,7 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = lib.runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu;
         system = "aarch64-linux";
         channel = lib.channels.nixpkgs.unstable;
       };
@@ -60,7 +60,7 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = lib.runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu;
         system = "x86_64-linux";
         channel = lib.channels.nixos.unstable;
       };
@@ -71,7 +71,7 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = lib.runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu;
         system = "aarch64-linux";
         channel = lib.channels.nixos.unstable;
       };
@@ -82,7 +82,7 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = lib.runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu;
         system = "x86_64-linux";
         channel = lib.channels.nixos.stable;
       };
@@ -93,7 +93,7 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = lib.runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu;
         system = "aarch64-linux";
         channel = lib.channels.nixos.stable;
       };
@@ -123,7 +123,7 @@ in
 
     deploy = {
       name = "Deploy";
-      runs-on = lib.runners.ubuntu.x86_64;
+      runs-on = lib.runners.ubuntu;
       needs = [
         "build-nixos-stable-x86_64-linux"
         "build-nixos-stable-aarch64-linux"

@@ -36,7 +36,7 @@ in
 
       {
         name = "Setup QEMU";
-        "if" = "inputs.runs-on == '${lib.runners.ubuntu.x86_64}' && !contains(fromJSON('[\"x86_64-linux\"]'), inputs.system)";
+        "if" = "inputs.runs-on == '${lib.runners.ubuntu}' && !contains(fromJSON('[\"x86_64-linux\"]'), inputs.system)";
         uses = "docker/setup-qemu-action@v3";
       }
 
@@ -83,7 +83,7 @@ in
       {
         name = "Build Nix packages";
         run = ''
-          nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs -build-flags "-L"
+          nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs -build-flags "--print-build-logs --keep-going"
         '';
       }
     ];

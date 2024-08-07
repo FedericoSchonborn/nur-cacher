@@ -2,7 +2,7 @@ let
   ref = x: "\${{ ${x} }}";
 
   runners = {
-    ubuntu.x86_64 = "ubuntu-22.04";
+    ubuntu = "ubuntu-22.04";
     macos = {
       x86_64 = "macos-13";
       aarch64 = "macos-14";
