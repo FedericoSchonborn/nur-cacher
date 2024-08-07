@@ -1,23 +1,5 @@
 let
   lib = import ../lib;
-
-  runners = {
-    ubuntu.x86_64 = "ubuntu-22.04";
-    macos = {
-      x86_64 = "macos-13";
-      aarch64 = "macos-14";
-    };
-  };
-
-  stableVersion = "24.05";
-  channels = {
-    nixpkgs.unstable = "nixpkgs-unstable";
-    nixos = {
-      stable = "nixos-${stableVersion}";
-      unstable = "nixos-unstable";
-    };
-    darwin.stable = "nixpkgs-${stableVersion}-darwin";
-  };
 in
 
 {
@@ -37,9 +19,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu.x86_64;
         system = "x86_64-linux";
-        channel = channels.nixpkgs.unstable;
+        channel = lib.channels.nixpkgs.unstable;
       };
     };
 
@@ -47,9 +29,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu.x86_64;
         system = "aarch64-linux";
-        channel = channels.nixpkgs.unstable;
+        channel = lib.channels.nixpkgs.unstable;
       };
     };
 
@@ -57,9 +39,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.macos.x86_64;
+        runs-on = lib.runners.macos.x86_64;
         system = "x86_64-darwin";
-        channel = channels.nixpkgs.unstable;
+        channel = lib.channels.nixpkgs.unstable;
       };
     };
 
@@ -67,9 +49,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.macos.aarch64;
+        runs-on = lib.runners.macos.aarch64;
         system = "aarch64-darwin";
-        channel = channels.nixpkgs.unstable;
+        channel = lib.channels.nixpkgs.unstable;
       };
     };
 
@@ -78,9 +60,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu.x86_64;
         system = "x86_64-linux";
-        channel = channels.nixos.unstable;
+        channel = lib.channels.nixos.unstable;
       };
     };
 
@@ -89,9 +71,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu.x86_64;
         system = "aarch64-linux";
-        channel = channels.nixos.unstable;
+        channel = lib.channels.nixos.unstable;
       };
     };
 
@@ -100,9 +82,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu.x86_64;
         system = "x86_64-linux";
-        channel = channels.nixos.stable;
+        channel = lib.channels.nixos.stable;
       };
     };
 
@@ -111,9 +93,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.ubuntu.x86_64;
+        runs-on = lib.runners.ubuntu.x86_64;
         system = "aarch64-linux";
-        channel = channels.nixos.stable;
+        channel = lib.channels.nixos.stable;
       };
     };
 
@@ -122,9 +104,9 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.macos.x86_64;
+        runs-on = lib.runners.macos.x86_64;
         system = "x86_64-darwin";
-        channel = channels.darwin.stable;
+        channel = lib.channels.darwin.stable;
       };
     };
 
@@ -133,15 +115,15 @@ in
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
-        runs-on = runners.macos.aarch64;
+        runs-on = lib.runners.macos.aarch64;
         system = "aarch64-darwin";
-        channel = channels.darwin.stable;
+        channel = lib.channels.darwin.stable;
       };
     };
 
     deploy = {
       name = "Deploy";
-      runs-on = runners.ubuntu.x86_64;
+      runs-on = lib.runners.ubuntu.x86_64;
       needs = [
         "build-nixos-stable-x86_64-linux"
         "build-nixos-stable-aarch64-linux"

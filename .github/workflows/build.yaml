@@ -8,7 +8,7 @@ jobs:
       - name: Checkout
         run: |
           git clone --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages $GITHUB_WORKSPACE
-      - if: inputs.runs-on == 'ubuntu-latest' && !contains(fromJSON('["x86_64-linux"]'), inputs.system)
+      - if: inputs.runs-on == 'ubuntu-22.04' && !contains(fromJSON('["x86_64-linux"]'), inputs.system)
         name: Setup QEMU
         uses: docker/setup-qemu-action@v3
       - name: Setup Nix
@@ -19,6 +19,12 @@ jobs:
             system = ${{ inputs.system }}
       - name: Setup Magic Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v7
+      - if: contains(fromJSON('["x86_64-linux", "aarch64-linux"]'), inputs.system)
+        name: Setup Cachix
+        uses: cachix/cachix-action@v15
+        with:
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          name: ${{ env.CACHIX_NAME }}
       - name: Show Nixpkgs version
         run: |
           nix eval --impure --raw --expr "(import <nixpkgs> {}).lib.version"
