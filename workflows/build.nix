@@ -42,7 +42,7 @@ in
 
       {
         name = "Setup Nix";
-        uses = "DeterminateSystems/nix-installer-action@v9";
+        uses = "DeterminateSystems/nix-installer-action@v13";
         "with" = {
           extra-conf = ''
             nix-path = nixpkgs=channel:${lib.ref "inputs.channel"}
@@ -53,13 +53,13 @@ in
 
       {
         name = "Setup Magic Nix Cache";
-        uses = "DeterminateSystems/magic-nix-cache-action@v2";
+        uses = "DeterminateSystems/magic-nix-cache-action@v7";
       }
 
       {
         name = "Setup Cachix";
         "if" = "contains(fromJSON('[\"x86_64-linux\", \"aarch64-linux\"]'), inputs.system)";
-        uses = "cachix/cachix-action@v13";
+        uses = "cachix/cachix-action@v15";
         "with" = {
           authToken = lib.ref "secrets.CACHIX_AUTH_TOKEN";
           name = lib.ref "env.CACHIX_NAME";
