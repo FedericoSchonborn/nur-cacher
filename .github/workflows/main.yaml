@@ -1,0 +1,72 @@
+env:
+  NUR_REPO: federicoschonborn
+jobs:
+  build-nixos-stable-aarch64-linux:
+    needs:
+      - build-nixos-unstable-aarch64-linux
+    secrets: inherit
+    uses: ./.github/workflows/build.yaml
+    with:
+      channel: nixos-24.05
+      runs-on: ubuntu-22.04
+      system: aarch64-linux
+  build-nixos-stable-x86_64-linux:
+    needs:
+      - build-nixos-unstable-x86_64-linux
+    secrets: inherit
+    uses: ./.github/workflows/build.yaml
+    with:
+      channel: nixos-24.05
+      runs-on: ubuntu-22.04
+      system: x86_64-linux
+  build-nixos-unstable-aarch64-linux:
+    needs:
+      - build-nixpkgs-unstable-aarch64-linux
+    secrets: inherit
+    uses: ./.github/workflows/build.yaml
+    with:
+      channel: nixos-unstable
+      runs-on: ubuntu-22.04
+      system: aarch64-linux
+  build-nixos-unstable-x86_64-linux:
+    needs:
+      - build-nixpkgs-unstable-x86_64-linux
+    secrets: inherit
+    uses: ./.github/workflows/build.yaml
+    with:
+      channel: nixos-unstable
+      runs-on: ubuntu-22.04
+      system: x86_64-linux
+  build-nixpkgs-unstable-aarch64-linux:
+    secrets: inherit
+    uses: ./.github/workflows/build.yaml
+    with:
+      channel: nixpkgs-unstable
+      runs-on: ubuntu-22.04
+      system: aarch64-linux
+  build-nixpkgs-unstable-x86_64-linux:
+    secrets: inherit
+    uses: ./.github/workflows/build.yaml
+    with:
+      channel: nixpkgs-unstable
+      runs-on: ubuntu-22.04
+      system: x86_64-linux
+  deploy:
+    name: Deploy
+    needs:
+      - build-nixos-stable-x86_64-linux
+      - build-nixos-stable-aarch64-linux
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Trigger NUR update
+        run: |
+          curl -XPOST https://nur-update.herokuapp.com/update?repo=${{ env.NUR_REPO }}
+name: Build and Populate Cache
+"on":
+  pull_request: {}
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: 55 3 * * *
+  workflow_dispatch: {}
