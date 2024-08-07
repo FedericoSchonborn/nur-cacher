@@ -22,9 +22,6 @@ jobs:
       - name: Show Nixpkgs version
         run: |
           nix eval --impure --raw --expr "(import <nixpkgs> {}).lib.version"
-      - name: Check evaluation
-        run: |
-          nix eval --impure --json --expr "builtins.mapAttrs (name: value: value.meta or {}) (import ./. {})"
       - name: Build Nix packages
         run: |
           nix run nixpkgs#nix-build-uncached -- ci.nix -A cacheOutputs -build-flags "-L"

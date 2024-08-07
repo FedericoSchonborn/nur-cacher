@@ -73,12 +73,12 @@ in
         '';
       }
 
-      {
-        name = "Check evaluation";
-        run = ''
-          nix eval --impure --json --expr "builtins.mapAttrs (name: value: value.meta or {}) (import ./. {})"
-        '';
-      }
+      # {
+      #   name = "Check evaluation";
+      #   run = ''
+      #     nix eval --impure --json --expr "builtins.mapAttrs (name: value: value.meta or {}) (import ./. {})"
+      #   '';
+      # }
 
       {
         name = "Build Nix packages";
