@@ -26,6 +26,7 @@ in
     };
 
     build-nixpkgs-unstable-aarch64-linux = {
+      needs = [ "build-nixpkgs-unstable-x86_64-linux" ];
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
@@ -46,6 +47,7 @@ in
     };
 
     build-nixpkgs-unstable-aarch64-darwin = {
+      needs = [ "build-nixpkgs-unstable-x86_64-darwin" ];
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
@@ -67,7 +69,10 @@ in
     };
 
     build-nixos-unstable-aarch64-linux = {
-      needs = [ "build-nixpkgs-unstable-aarch64-linux" ];
+      needs = [
+        "build-nixpkgs-unstable-aarch64-linux"
+        "build-nixos-unstable-x86_64-linux"
+      ];
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
@@ -89,7 +94,10 @@ in
     };
 
     build-nixos-stable-aarch64-linux = {
-      needs = [ "build-nixos-unstable-aarch64-linux" ];
+      needs = [
+        "build-nixos-unstable-aarch64-linux"
+        "build-nixos-stable-x86_64-linux"
+      ];
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
@@ -111,7 +119,10 @@ in
     };
 
     build-nixpkgs-stable-aarch64-darwin = {
-      needs = [ "build-nixpkgs-unstable-aarch64-darwin" ];
+      needs = [
+        "build-nixpkgs-unstable-aarch64-darwin"
+        "build-nixpkgs-stable-x86_64-darwin"
+      ];
       secrets = "inherit";
       uses = "./.github/workflows/build.yaml";
       "with" = {
