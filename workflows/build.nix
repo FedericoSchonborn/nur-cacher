@@ -56,15 +56,15 @@ in
         uses = "DeterminateSystems/magic-nix-cache-action@v7";
       }
 
-      {
-        name = "Setup Cachix";
-        "if" = "contains(fromJSON('[\"x86_64-linux\", \"aarch64-linux\"]'), inputs.system)";
-        uses = "cachix/cachix-action@v15";
-        "with" = {
-          authToken = lib.ref "secrets.CACHIX_AUTH_TOKEN";
-          name = lib.ref "env.CACHIX_NAME";
-        };
-      }
+      # {
+      #   name = "Setup Cachix";
+      #   "if" = "contains(fromJSON('[\"x86_64-linux\", \"aarch64-linux\"]'), inputs.system)";
+      #   uses = "cachix/cachix-action@v15";
+      #   "with" = {
+      #     authToken = lib.ref "secrets.CACHIX_AUTH_TOKEN";
+      #     name = lib.ref "env.CACHIX_NAME";
+      #   };
+      # }
 
       {
         name = "Show Nixpkgs version";

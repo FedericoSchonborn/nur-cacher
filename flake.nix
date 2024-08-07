@@ -19,8 +19,8 @@
         {
           # Adapted from https://kokada.capivaras.dev/blog/generating-yaml-files-with-nix/
           # TODO: DRY this crap
-          packages.actions =
-            pkgs.runCommand "actions"
+          packages.workflows =
+            pkgs.runCommand "workflows"
               {
                 buildInputs = with pkgs; [
                   action-validator
