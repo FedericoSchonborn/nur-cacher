@@ -100,18 +100,6 @@ jobs:
       channel: nixpkgs-unstable
       runner: ubuntu-22.04
       system: x86_64-linux
-  deploy:
-    name: Deploy
-    needs:
-      - build-nixos-24_05-x86_64-linux
-      - build-nixos-24_05-aarch64-linux
-      - build-nixpkgs-24_05-darwin-x86_64-darwin
-      - build-nixpkgs-24_05-darwin-aarch64-darwin
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Trigger NUR update
-        run: |
-          curl -XPOST https://nur-update.herokuapp.com/update?repo=${{ env.NUR_REPO }}
 name: Build and Populate Cache
 "on":
   pull_request: {}

@@ -186,37 +186,5 @@ in
             ];
           }
         ]
-    )
-    // {
-      deploy = {
-        name = "Deploy";
-        runs-on = lib.runners.ubuntu;
-        needs = builtins.map jobName [
-          {
-            channel = lib.channels.nixos.stable;
-            system = "x86_64-linux";
-          }
-          {
-            channel = lib.channels.nixos.stable;
-            system = "aarch64-linux";
-          }
-          {
-            channel = lib.channels.darwin.stable;
-            system = "x86_64-darwin";
-          }
-          {
-            channel = lib.channels.darwin.stable;
-            system = "aarch64-darwin";
-          }
-        ];
-        steps = [
-          {
-            name = "Trigger NUR update";
-            run = ''
-              curl -XPOST https://nur-update.herokuapp.com/update?repo=${lib.ref "env.NUR_REPO"}
-            '';
-          }
-        ];
-      };
-    };
+    );
 }
