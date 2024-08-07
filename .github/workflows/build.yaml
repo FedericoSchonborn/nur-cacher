@@ -6,9 +6,8 @@ jobs:
     runs-on: ${{ inputs.runs-on }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          repository: https://codeberg.org/FedericoSchonborn/nur-packages
+        run: |
+          git clone --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages $GITHUB_WORKSPACE
       - if: inputs.runs-on == 'ubuntu-latest' && !contains(fromJSON('["x86_64-linux"]'), inputs.system)
         name: Setup QEMU
         uses: docker/setup-qemu-action@v3

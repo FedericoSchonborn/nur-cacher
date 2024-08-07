@@ -29,8 +29,9 @@ in
     steps = [
       {
         name = "Checkout";
-        uses = "actions/checkout@v4";
-        "with".repository = "https://codeberg.org/FedericoSchonborn/nur-packages";
+        run = ''
+          git clone --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages $GITHUB_WORKSPACE
+        '';
       }
 
       {
