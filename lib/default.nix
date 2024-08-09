@@ -8,6 +8,8 @@ let
       }) xs
     );
 
+  optionalAttrs = p: attrs: if p then attrs else { };
+
   mkRef = x: "\${{ ${x} }}";
 
   mkInput = x: "inputs.${x}";
@@ -41,16 +43,13 @@ let
 
   runners = {
     ubuntu = "ubuntu-22.04";
-    macos = {
-      x86_64 = "macos-13";
-      aarch64 = "macos-14";
-    };
+    macos-x86_64 = "macos-13";
+    macos-aarch64 = "macos-14";
   };
 
   lixVersion = "2.90.0";
 
   nixpkgsVersion = {
-    oldStable = "23.11";
     stable = "24.05";
     unstable = "unstable";
   };
@@ -61,16 +60,22 @@ let
     };
 
     nixos = builtins.mapAttrs (_: version: "nixos-${version}") {
-      inherit (nixpkgsVersion) oldStable stable unstable;
+      inherit (nixpkgsVersion) stable unstable;
+    };
+
+    nixos-small = builtins.mapAttrs (_: version: "nixos-${version}-small") {
+      inherit (nixpkgsVersion) stable unstable;
     };
 
     darwin = builtins.mapAttrs (_: version: "nixpkgs-${version}-darwin") {
-      inherit (nixpkgsVersion) oldStable stable;
+      inherit (nixpkgsVersion) stable;
     };
   };
 in
 {
   inherit
+    genAttrs
+    optionalAttrs
     mkRef
     mkInput
     mkInputRef

@@ -1,5 +1,14 @@
+lib:
+
 let
-  lib = import ../lib;
+  inherit (lib)
+    envRefs
+    inputRefs
+    inputs
+    lixVersion
+    runners
+    secretRefs
+    ;
 in
 
 {
@@ -28,19 +37,19 @@ in
 
   jobs.build = {
     name = "Build";
-    runs-on = lib.inputRefs.runner;
+    runs-on = inputRefs.runner;
 
     steps = [
       {
         name = "Checkout";
         run = ''
-          git clone --verbose --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages $GITHUB_WORKSPACE
+          git clone --verbose --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages "$GITHUB_WORKSPACE"
         '';
       }
 
       {
         name = "Setup QEMU";
-        "if" = "${lib.inputs.runner} == '${lib.runners.ubuntu}' && ${lib.inputs.targetSystem} != ${lib.inputs.buildSystem}";
+        "if" = "${inputs.runner} == '${runners.ubuntu}' && ${inputs.targetSystem} != ${inputs.buildSystem}";
         uses = "docker/setup-qemu-action@v3";
       }
 
@@ -48,8 +57,8 @@ in
         name = "Setup Nix";
         uses = "DeterminateSystems/nix-installer-action@v13";
         "with" = {
-          source-url = "https://install.lix.systems/lix/lix-installer-${lib.inputRefs.buildSystem}";
-          nix-package-url = "https://releases.lix.systems/lix/lix-${lib.lixVersion}/lix-${lib.lixVersion}-${lib.inputRefs.buildSystem}.tar.xz";
+          source-url = "https://install.lix.systems/lix/lix-installer-${inputRefs.buildSystem}";
+          nix-package-url = "https://releases.lix.systems/lix/lix-${lixVersion}/lix-${lixVersion}-${inputRefs.buildSystem}.tar.xz";
         };
       }
 
@@ -70,25 +79,25 @@ in
               "aarch64-darwin"
             ];
           in
-          ''contains(fromJSON('${builtins.toJSON systems}'), ${lib.inputs.buildSystem})'';
+          ''contains(fromJSON('${builtins.toJSON systems}'), ${inputs.buildSystem})'';
         uses = "cachix/cachix-action@v15";
         "with" = {
-          authToken = lib.secretRefs.CACHIX_AUTH_TOKEN;
-          name = lib.envRefs.CACHIX_NAME;
+          authToken = secretRefs.CACHIX_AUTH_TOKEN;
+          name = envRefs.CACHIX_NAME;
         };
       }
 
       {
         name = "Dry Build Nix packages";
         run = ''
-          nix build --dry-run --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${lib.inputRefs.targetSystem}" --override-flake nixpkgs "github:NixOS/nixpkgs/${lib.inputRefs.channel}"
+          nix build --dry-run --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.channel}
         '';
       }
 
       {
         name = "Build Nix packages";
         run = ''
-          nix build --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${lib.inputRefs.targetSystem}" --override-flake nixpkgs "github:NixOS/nixpkgs/${lib.inputRefs.channel}"
+          nix build --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.channel}
         '';
       }
     ];

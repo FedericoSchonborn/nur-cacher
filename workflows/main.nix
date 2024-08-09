@@ -1,5 +1,7 @@
+lib:
+
 let
-  lib = import ../lib;
+  inherit (lib) channels optionalAttrs runners;
 in
 
 {
@@ -72,128 +74,128 @@ in
                   ;
               };
               secrets = "inherit";
-            } // (if builtins.isList needs then { needs = builtins.map jobName needs; } else { });
+            } // optionalAttrs (builtins.isList needs) { needs = builtins.map jobName needs; };
           }
         )
         [
           {
-            runner = lib.runners.ubuntu;
+            runner = runners.ubuntu;
             system = "x86_64-linux";
-            channel = lib.channels.nixpkgs.unstable;
+            channel = channels.nixpkgs.unstable;
           }
 
           {
-            runner = lib.runners.ubuntu;
+            runner = runners.ubuntu;
             buildSystem = "x86_64-linux";
             targetSystem = "aarch64-linux";
-            channel = lib.channels.nixpkgs.unstable;
+            channel = channels.nixpkgs.unstable;
             needs = [
               {
-                channel = lib.channels.nixpkgs.unstable;
+                channel = channels.nixpkgs.unstable;
                 system = "x86_64-linux";
               }
             ];
           }
 
           {
-            runner = lib.runners.macos.x86_64;
+            runner = runners.macos-x86_64;
             system = "x86_64-darwin";
-            channel = lib.channels.nixpkgs.unstable;
+            channel = channels.nixpkgs.unstable;
           }
 
           {
-            runner = lib.runners.macos.aarch64;
+            runner = runners.macos-aarch64;
             system = "aarch64-darwin";
-            channel = lib.channels.nixpkgs.unstable;
+            channel = channels.nixpkgs.unstable;
             needs = [
               {
-                channel = lib.channels.nixpkgs.unstable;
+                channel = channels.nixpkgs.unstable;
                 system = "x86_64-darwin";
               }
             ];
           }
 
           {
-            runner = lib.runners.ubuntu;
+            runner = runners.ubuntu;
             system = "x86_64-linux";
-            channel = lib.channels.nixos.unstable;
+            channel = channels.nixos.unstable;
             needs = [
               {
-                channel = lib.channels.nixpkgs.unstable;
+                channel = channels.nixpkgs.unstable;
                 system = "x86_64-linux";
               }
             ];
           }
 
           {
-            runner = lib.runners.ubuntu;
+            runner = runners.ubuntu;
             buildSystem = "x86_64-linux";
             targetSystem = "aarch64-linux";
-            channel = lib.channels.nixos.unstable;
+            channel = channels.nixos.unstable;
             needs = [
               {
-                channel = lib.channels.nixpkgs.unstable;
+                channel = channels.nixpkgs.unstable;
                 system = "aarch64-linux";
               }
               {
-                channel = lib.channels.nixos.unstable;
+                channel = channels.nixos.unstable;
                 system = "x86_64-linux";
               }
             ];
           }
 
           {
-            runner = lib.runners.ubuntu;
+            runner = runners.ubuntu;
             system = "x86_64-linux";
-            channel = lib.channels.nixos.stable;
+            channel = channels.nixos.stable;
             needs = [
               {
-                channel = lib.channels.nixos.unstable;
+                channel = channels.nixos.unstable;
                 system = "x86_64-linux";
               }
             ];
           }
 
           {
-            runner = lib.runners.ubuntu;
+            runner = runners.ubuntu;
             buildSystem = "x86_64-linux";
             targetSystem = "aarch64-linux";
-            channel = lib.channels.nixos.stable;
+            channel = channels.nixos.stable;
             needs = [
               {
-                channel = lib.channels.nixos.unstable;
+                channel = channels.nixos.unstable;
                 system = "aarch64-linux";
               }
               {
-                channel = lib.channels.nixos.stable;
+                channel = channels.nixos.stable;
                 system = "x86_64-linux";
               }
             ];
           }
 
           {
-            runner = lib.runners.macos.x86_64;
+            runner = runners.macos-x86_64;
             system = "x86_64-darwin";
-            channel = lib.channels.darwin.stable;
+            channel = channels.darwin.stable;
             needs = [
               {
-                channel = lib.channels.nixpkgs.unstable;
+                channel = channels.nixpkgs.unstable;
                 system = "x86_64-darwin";
               }
             ];
           }
 
           {
-            runner = lib.runners.macos.aarch64;
+            runner = runners.macos-aarch64;
             system = "aarch64-darwin";
-            channel = lib.channels.darwin.stable;
+            channel = channels.darwin.stable;
             needs = [
               {
-                channel = lib.channels.nixpkgs.unstable;
+                channel = channels.nixpkgs.unstable;
                 system = "aarch64-darwin";
               }
               {
-                channel = lib.channels.darwin.stable;
+                channel = channels.darwin.stable;
                 system = "x86_64-darwin";
               }
             ];

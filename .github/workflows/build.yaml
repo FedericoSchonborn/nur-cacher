@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Checkout
         run: |
-          git clone --verbose --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages $GITHUB_WORKSPACE
+          git clone --verbose --depth 1 https://codeberg.org/FedericoSchonborn/nur-packages "$GITHUB_WORKSPACE"
       - if: inputs.runner == 'ubuntu-22.04' && inputs.targetSystem != inputs.buildSystem
         name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -26,10 +26,10 @@ jobs:
           name: ${{ env.CACHIX_NAME }}
       - name: Dry Build Nix packages
         run: |
-          nix build --dry-run --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --override-flake nixpkgs "github:NixOS/nixpkgs/${{ inputs.channel }}"
+          nix build --dry-run --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --inputs-from . --override-input nixpkgs ${{ inputs.channel }}
       - name: Build Nix packages
         run: |
-          nix build --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --override-flake nixpkgs "github:NixOS/nixpkgs/${{ inputs.channel }}"
+          nix build --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --inputs-from . --override-input nixpkgs ${{ inputs.channel }}
 name: Build
 "on":
   workflow_call:
