@@ -90,14 +90,14 @@ in
       {
         name = "Dry Build Nix packages";
         run = ''
-          nix build --dry-run --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.channel}
+          nix build --dry-run --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.channel}
         '';
       }
 
       {
         name = "Build Nix packages";
         run = ''
-          nix build --print-build-logs --keep-going --no-link --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.channel}
+          nix build --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.channel}
         '';
       }
     ];
