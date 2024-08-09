@@ -20,6 +20,7 @@ let
     "buildSystem"
     "targetSystem"
     "channel"
+    "flakeInput"
   ];
 
   inputs = genAttrs inputNames mkInput;

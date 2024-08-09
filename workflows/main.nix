@@ -1,7 +1,12 @@
 lib:
 
 let
-  inherit (lib) channels optionalAttrs runners;
+  inherit (lib)
+    channels
+    nixpkgsVersion
+    optionalAttrs
+    runners
+    ;
 in
 
 {
@@ -29,6 +34,7 @@ in
             buildSystem ? system,
             targetSystem ? system,
             channel,
+            flakeInput ? builtins.replaceStrings [ nixpkgsVersion.stable ] [ "stable" ] channel,
             needs ? null,
           }:
           {
@@ -71,6 +77,7 @@ in
                   buildSystem
                   targetSystem
                   channel
+                  flakeInput
                   ;
               };
               secrets = "inherit";

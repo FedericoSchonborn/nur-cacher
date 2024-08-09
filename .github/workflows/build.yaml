@@ -26,10 +26,10 @@ jobs:
           name: ${{ env.CACHIX_NAME }}
       - name: Dry Build Nix packages
         run: |
-          nix build --dry-run --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --inputs-from . --override-input nixpkgs ${{ inputs.channel }}
+          nix build --dry-run --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --inputs-from . --override-input nixpkgs ${{ inputs.flakeInput }}
       - name: Build Nix packages
         run: |
-          nix build --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --inputs-from . --override-input nixpkgs ${{ inputs.channel }}
+          nix build --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${{ inputs.targetSystem }}" --inputs-from . --override-input nixpkgs ${{ inputs.flakeInput }}
 name: Build
 "on":
   workflow_call:
@@ -38,6 +38,9 @@ name: Build
         required: true
         type: string
       channel:
+        required: true
+        type: string
+      flakeInput:
         required: true
         type: string
       runner:

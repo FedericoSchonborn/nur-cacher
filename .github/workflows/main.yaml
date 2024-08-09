@@ -11,6 +11,7 @@ jobs:
     with:
       buildSystem: x86_64-linux
       channel: nixos-24.05
+      flakeInput: nixos-stable
       runner: ubuntu-22.04
       targetSystem: aarch64-linux
   build-nixos-24_05-x86_64-linux:
@@ -22,6 +23,7 @@ jobs:
     with:
       buildSystem: x86_64-linux
       channel: nixos-24.05
+      flakeInput: nixos-stable
       runner: ubuntu-22.04
       targetSystem: x86_64-linux
   build-nixos-unstable-aarch64-linux:
@@ -34,6 +36,7 @@ jobs:
     with:
       buildSystem: x86_64-linux
       channel: nixos-unstable
+      flakeInput: nixos-unstable
       runner: ubuntu-22.04
       targetSystem: aarch64-linux
   build-nixos-unstable-x86_64-linux:
@@ -45,6 +48,7 @@ jobs:
     with:
       buildSystem: x86_64-linux
       channel: nixos-unstable
+      flakeInput: nixos-unstable
       runner: ubuntu-22.04
       targetSystem: x86_64-linux
   build-nixpkgs-24_05-darwin-aarch64-darwin:
@@ -57,6 +61,7 @@ jobs:
     with:
       buildSystem: aarch64-darwin
       channel: nixpkgs-24.05-darwin
+      flakeInput: nixpkgs-stable-darwin
       runner: macos-14
       targetSystem: aarch64-darwin
   build-nixpkgs-24_05-darwin-x86_64-darwin:
@@ -68,6 +73,7 @@ jobs:
     with:
       buildSystem: x86_64-darwin
       channel: nixpkgs-24.05-darwin
+      flakeInput: nixpkgs-stable-darwin
       runner: macos-13
       targetSystem: x86_64-darwin
   build-nixpkgs-unstable-aarch64-darwin:
@@ -79,6 +85,7 @@ jobs:
     with:
       buildSystem: aarch64-darwin
       channel: nixpkgs-unstable
+      flakeInput: nixpkgs-unstable
       runner: macos-14
       targetSystem: aarch64-darwin
   build-nixpkgs-unstable-aarch64-linux:
@@ -90,6 +97,7 @@ jobs:
     with:
       buildSystem: x86_64-linux
       channel: nixpkgs-unstable
+      flakeInput: nixpkgs-unstable
       runner: ubuntu-22.04
       targetSystem: aarch64-linux
   build-nixpkgs-unstable-x86_64-darwin:
@@ -99,6 +107,7 @@ jobs:
     with:
       buildSystem: x86_64-darwin
       channel: nixpkgs-unstable
+      flakeInput: nixpkgs-unstable
       runner: macos-13
       targetSystem: x86_64-darwin
   build-nixpkgs-unstable-x86_64-linux:
@@ -108,6 +117,7 @@ jobs:
     with:
       buildSystem: x86_64-linux
       channel: nixpkgs-unstable
+      flakeInput: nixpkgs-unstable
       runner: ubuntu-22.04
       targetSystem: x86_64-linux
 name: Build and Populate Cache
