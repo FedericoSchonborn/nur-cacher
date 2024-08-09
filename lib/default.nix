@@ -12,35 +12,24 @@ let
 
   mkRef = x: "\${{ ${x} }}";
 
-  mkInput = x: "inputs.${x}";
-  mkInputRef = x: mkRef (mkInput x);
+  input = x: "inputs.${x}";
+  inputRef = x: mkRef (input x);
 
-  inputNames = [
-    "runner"
-    "buildSystem"
-    "targetSystem"
-    "channel"
-    "flakeInput"
-  ];
+  secret = x: "secrets.${x}";
+  secretRef = x: mkRef (secret x);
 
-  inputs = genAttrs inputNames mkInput;
-  inputRefs = genAttrs inputNames mkInputRef;
+  env = x: "env.${x}";
+  envRef = x: mkRef (env x);
 
-  mkSecret = x: "secrets.${x}";
-  mkSecretRef = x: mkRef (mkSecret x);
-
-  secretNames = [ "CACHIX_AUTH_TOKEN" ];
-
-  secrets = genAttrs secretNames mkSecret;
-  secretRefs = genAttrs secretNames mkSecretRef;
-
-  mkEnv = x: "env.${x}";
-  mkEnvRef = x: mkRef (mkEnv x);
-
-  envNames = [ "CACHIX_NAME" ];
-
-  envs = genAttrs envNames mkEnv;
-  envRefs = genAttrs envNames mkEnvRef;
+  inputTypes =
+    let
+      required = attrs: attrs // { required = true; };
+      optional = attrs: attrs // { required = false; };
+    in
+    {
+      inherit required optional;
+      string.type = "string";
+    };
 
   runners = {
     ubuntu = "ubuntu-22.04";
@@ -78,18 +67,13 @@ in
     genAttrs
     optionalAttrs
     mkRef
-    mkInput
-    mkInputRef
-    inputs
-    inputRefs
-    mkSecret
-    mkSecretRef
-    secrets
-    secretRefs
-    mkEnv
-    mkEnvRef
-    envs
-    envRefs
+    input
+    inputRef
+    inputTypes
+    secret
+    secretRef
+    env
+    envRef
     runners
     lixVersion
     nixpkgsVersion

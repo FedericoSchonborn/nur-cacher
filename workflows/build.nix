@@ -2,12 +2,13 @@ lib:
 
 let
   inherit (lib)
-    envRefs
-    inputRefs
-    inputs
+    envRef
+    inputRef
+    input
+    inputTypes
     lixVersion
     runners
-    secretRefs
+    secretRef
     ;
 in
 
@@ -15,33 +16,18 @@ in
   name = "Build";
 
   on.workflow_call.inputs = {
-    runner = {
-      type = "string";
-      required = true;
-    };
-    buildSystem = {
-      type = "string";
-      required = true;
-    };
-    targetSystem = {
-      type = "string";
-      required = true;
-    };
-    channel = {
-      type = "string";
-      required = true;
-    };
-    flakeInput = {
-      type = "string";
-      required = true;
-    };
+    runner = with inputTypes; required string;
+    buildSystem = with inputTypes; required string;
+    targetSystem = with inputTypes; required string;
+    channel = with inputTypes; required string;
+    flakeInput = with inputTypes; required string;
   };
 
   env.CACHIX_NAME = "federicoschonborn";
 
   jobs.build = {
     name = "Build";
-    runs-on = inputRefs.runner;
+    runs-on = inputRef "runner";
 
     steps = [
       {
@@ -53,7 +39,7 @@ in
 
       {
         name = "Setup QEMU";
-        "if" = "${inputs.runner} == '${runners.ubuntu}' && ${inputs.targetSystem} != ${inputs.buildSystem}";
+        "if" = "${input "runner"} == '${runners.ubuntu}' && ${input "targetSystem"} != ${input "buildSystem"}";
         uses = "docker/setup-qemu-action@v3";
       }
 
@@ -61,8 +47,8 @@ in
         name = "Setup Nix";
         uses = "DeterminateSystems/nix-installer-action@v13";
         "with" = {
-          source-url = "https://install.lix.systems/lix/lix-installer-${inputRefs.buildSystem}";
-          nix-package-url = "https://releases.lix.systems/lix/lix-${lixVersion}/lix-${lixVersion}-${inputRefs.buildSystem}.tar.xz";
+          source-url = "https://install.lix.systems/lix/lix-installer-${inputRef "buildSystem"}";
+          nix-package-url = "https://releases.lix.systems/lix/lix-${lixVersion}/lix-${lixVersion}-${inputRef "buildSystem"}.tar.xz";
         };
       }
 
@@ -83,25 +69,25 @@ in
               "aarch64-darwin"
             ];
           in
-          ''contains(fromJSON('${builtins.toJSON systems}'), ${inputs.buildSystem})'';
+          ''contains(fromJSON('${builtins.toJSON systems}'), ${input "buildSystem"})'';
         uses = "cachix/cachix-action@v15";
         "with" = {
-          authToken = secretRefs.CACHIX_AUTH_TOKEN;
-          name = envRefs.CACHIX_NAME;
+          authToken = secretRef "CACHIX_AUTH_TOKEN";
+          name = envRef "CACHIX_NAME";
         };
       }
 
       {
         name = "Dry Build Nix packages";
         run = ''
-          nix build --dry-run --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.flakeInput}
+          nix build --dry-run --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${inputRef "targetSystem"}" --inputs-from . --override-input nixpkgs ${inputRef "flakeInput"}
         '';
       }
 
       {
         name = "Build Nix packages";
         run = ''
-          nix build --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${inputRefs.targetSystem}" --inputs-from . --override-input nixpkgs ${inputRefs.flakeInput}
+          nix build --print-build-logs --keep-going --no-link --impure --file ./ci.nix cacheOutputs --system "${inputRef "targetSystem"}" --inputs-from . --override-input nixpkgs ${inputRef "flakeInput"}
         '';
       }
     ];
